@@ -41,7 +41,7 @@ func main() {
 
 	db, err := sql.Open(dbDriver, dsn)
 	if err != nil {
-		log.Fatal("Gagal terkoneksi ke database:", err)
+		log.Fatal("[ERROR] failed connecting to database: ", err)
 	}
 	defer db.Close()
 
@@ -75,7 +75,7 @@ func main() {
 
 			jsonData, err := json.MarshalIndent(dataResponse, "", "  ")
 			if err != nil {
-				log.Println("[ERROR] marshaling data to JSON:", err)
+				log.Println("[ERROR] marshaling data to JSON : ", err)
 				continue
 			}
 
@@ -87,23 +87,23 @@ func main() {
 
 			resultQuery, errQuery := db.Query("SELECT id FROM weather LIMIT 1")
 			if errQuery != nil {
-				log.Printf("[ERROR] Gagal mengambil data : %v\n", err)
+				log.Printf("[ERROR] failed fetch data : %v\n", err)
 			}
 
 			if !resultQuery.Next() {
 				_, errExec := db.Exec("INSERT INTO weather (water, wind) VALUES ($1, $2)", data.water, data.wind)
 				if errExec != nil {
-					log.Printf("[ERROR] Gagal menambahkan data : %v\n", err)
+					log.Printf("[ERROR] failed insert data : %v\n", err)
 				}
 			} else {
 				err := resultQuery.Scan(&id)
 				if err != nil {
-					log.Printf("[ERROR] Gagal mengambil data : %v\n", err)
+					log.Printf("[ERROR] failed fetch data : %v\n", err)
 				}
 
 				_, errExec := db.Exec("UPDATE weather SET water=$1, wind=$2 WHERE id=$3", data.water, data.wind, id)
 				if errExec != nil {
-					log.Printf("[ERROR] Gagal mengupdate data : %v\n", err)
+					log.Printf("[ERROR] failed updated data : %v\n", err)
 				}
 			}
 		}
