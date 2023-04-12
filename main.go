@@ -52,8 +52,11 @@ func main() {
 
 	go func() {
 		for {
-			water := rand.Intn(100) + 1
-			wind := rand.Intn(100) + 1
+			min := 1
+			max := 15
+			rand.Seed(time.Now().UnixNano())
+			water := rand.Intn(max - min)
+			wind := rand.Intn(max - min)
 			dataChan <- struct {
 				water int
 				wind  int
